@@ -13,6 +13,7 @@ const App = () => {
       <Routes>
         <Route path={routePath.HOME} element={<Home/>}/>
         <Route path={routePath.DASHBOARD} element={<Dashboard/>}/>
+        <Route path={'/view/:id'}/>
       </Routes>
     </>
   );

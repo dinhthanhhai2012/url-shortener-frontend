@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Table } from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Table} from 'antd';
 import axios from 'axios';
-import { shortHost } from 'src/constants';
+import {shortHost} from 'src/constants';
+import {DeleteOutlined, EyeOutlined} from "@ant-design/icons";
+import {toast} from "react-toastify";
+import success = toast.success;
 
 const fakeData = {
   status: "success",
@@ -80,7 +83,26 @@ const Dashboard: React.FC = () => {
   const [data, setData] = useState<any>(fakeData.data.data);
   const [total, setTotal] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
-  const [isLoading, setIsLoading] = useState<any>();
+  let [isLoading, setIsLoading] = useState<any>();
+
+  const viewLink = async () => {
+    try {
+      const res = await axios.get('/api/v1/myurls', {params: {page: page}})
+      return res
+    } catch (error) {
+      isLoading = false
+
+    }
+  };
+
+  const deleteLink = async (id: number) => {
+    try {
+      const res = await axios.delete(`${process.env.REACT_APP_BASE_API}/api/v1/urls/${id}`)
+
+    } catch (error: any) {
+      toast(error.message)
+    }
+  }
 
   const columnData: Array<any> = [
     {
@@ -111,11 +133,16 @@ const Dashboard: React.FC = () => {
       title: 'Actions',
       dataIndex: 'action',
       key: 'action',
-      render: () => {
+      render: (text: any, record: any) => {
         return (
           <div className={'flex'}>
-            <div>edit</div>
-            <div>create</div>
+            <EyeOutlined className={"cursor-pointer"} onClick={() => {
+              viewLink()
+            }}/>
+            <span> </span>
+            <DeleteOutlined className={"cursor-pointer"} onClick={() => {
+              deleteLink(record.id)
+            }}/>
           </div>
         )
       }
