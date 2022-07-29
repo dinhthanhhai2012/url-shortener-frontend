@@ -1,11 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {Table} from 'antd';
-import axios from 'axios';
-import {shortHost} from 'src/constants';
-import {DeleteOutlined, EyeOutlined} from "@ant-design/icons";
-import {toast} from "react-toastify";
-import success = toast.success;
-import axiosInstance from "src/services/config";
+import React, { useEffect } from 'react';
+import { Table } from 'antd';
+import { routePath, shortHost } from 'src/constants';
+import { DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { toast } from 'react-toastify';
+import axiosInstance from 'src/services/config';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'src/store/store';
+import { getUrls } from 'src/pages/Dashboard/services';
+import { setPage, setView, ViewData } from 'src/pages/Dashboard/redux/url';
+import { useNavigate } from 'react-router-dom';
 
 // const fakeData = {
 //   status: "success",
@@ -81,29 +84,19 @@ import axiosInstance from "src/services/config";
 // }
 
 const Dashboard: React.FC = () => {
-  const [data, setData] = useState<any>([]);
-  const [total, setTotal] = useState<number>(0);
-  const [page, setPage] = useState<number>(1);
-  let [isLoading, setIsLoading] = useState<any>();
+  const { data, total, page, isLoading } = useSelector((state: RootState) => state.url);
 
-  const index = async () => {
+  const dispatch = useDispatch();
+  const navigator = useNavigate();
 
-  }
-
-  const viewLink = async () => {
-    try {
-      const res = await axiosInstance.get('/api/v1/myurls', {params: {page: page}})
-      return res
-    } catch (error) {
-      isLoading = false
-
-    }
+  const viewLink = async (data: ViewData) => {
+    dispatch(setView(data));
+    navigator(routePath.VIEW);
   };
 
   const deleteLink = async (id: number) => {
     try {
-      const res = await axiosInstance.delete(`/api/v1/urls/${id}`)
-
+      await axiosInstance.delete(`/api/v1/urls/${id}`)
     } catch (error: any) {
       toast(error.message)
     }
@@ -117,7 +110,7 @@ const Dashboard: React.FC = () => {
       render: (text: string) => {
         return (
           <>
-            {shortHost}{text}
+            {shortHost}/{text}
           </>
         )
       }
@@ -141,11 +134,11 @@ const Dashboard: React.FC = () => {
       render: (text: any, record: any) => {
         return (
           <div className={'flex'}>
-            <EyeOutlined className={"cursor-pointer"} onClick={() => {
-              viewLink()
+            <EyeOutlined className={'cursor-pointer'} onClick={() => {
+              viewLink({url_key: record.url_key, long_url: record.long_url})
             }}/>
             <span> </span>
-            <DeleteOutlined className={"cursor-pointer"} onClick={() => {
+            <DeleteOutlined className={'cursor-pointer'} onClick={() => {
               deleteLink(record.id)
             }}/>
           </div>
@@ -155,11 +148,7 @@ const Dashboard: React.FC = () => {
   ]
 
   const fetchData = async () => {
-    const res = await axiosInstance.get(`${process.env.REACT_APP_BASE_API}/api/v1/myurls`, {params: {page}})
-    console.log(res)
-    setData(res.data.data);
-    setPage(res.data.page);
-    setTotal(res.data.total);
+    dispatch(getUrls(page));
   }
 
   useEffect(() => {
@@ -207,7 +196,9 @@ const Dashboard: React.FC = () => {
         <Table
           dataSource={data}
           columns={columnData}
-          onChange={(page) => page.current && setPage(page.current)}
+          onChange={(page) => {
+            page.current && dispatch(setPage(page.current));
+          }}
           pagination={{
             total: total,
             pageSize: 10,

@@ -22,7 +22,7 @@ const Home = () => {
         <div className={'mt-8'}>
           <div className={'text-[16px] font-bold text-[#212529]'}>Custom URL (optional)</div>
           <div className={'flex text-[26px] mt-4 items-center'}>
-            <div>{shortHost}</div>
+            <div>{shortHost}/</div>
             <Input style={{ width: '300px' }} bordered={false} placeholder={'custom here'}/>
           </div>
         </div>
