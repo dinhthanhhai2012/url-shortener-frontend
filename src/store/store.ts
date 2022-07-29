@@ -1,8 +1,9 @@
-import { configureStore } from '@reduxjs/toolkit';
+import {configureStore} from '@reduxjs/toolkit';
+import urlReducer from "src/pages/Dashboard/redux/url";
 
 export const store = configureStore({
   reducer: {
-    // auth: authReducer,
+    url: urlReducer
   }
 });
 

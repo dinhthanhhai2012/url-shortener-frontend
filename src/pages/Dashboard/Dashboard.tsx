@@ -5,89 +5,94 @@ import {shortHost} from 'src/constants';
 import {DeleteOutlined, EyeOutlined} from "@ant-design/icons";
 import {toast} from "react-toastify";
 import success = toast.success;
+import axiosInstance from "src/services/config";
 
-const fakeData = {
-  status: "success",
-  message: "Successfully Requested",
-  data: {
-    total: 13,
-    perPage: 5,
-    page: 1,
-    lastPage: 3,
-    data: [
-      {
-        id: 22,
-        user_id: 1,
-        url_key: "7x0Wfx",
-        is_custom: 0,
-        long_url: "https://b501-27-72-98-177.ap.ngrok.io/",
-        meta_title: "Let shorten your links here:",
-        clicks: 0,
-        ip: "127.0.0.1",
-        created_at: "2022-07-13 15:09:18",
-        updated_at: "2022-07-13 15:09:18"
-      },
-      {
-        id: 21,
-        user_id: 1,
-        url_key: "5l9pEu",
-        is_custom: 0,
-        long_url: "https://www.messenger.com/t/100007175804217",
-        meta_title: "Messenger",
-        clicks: 0,
-        ip: "127.0.0.1",
-        created_at: "2022-07-13 14:59:58",
-        updated_at: "2022-07-13 14:59:58"
-      },
-      {
-        id: 19,
-        user_id: 1,
-        url_key: "25hfsgsh",
-        is_custom: 1,
-        long_url: "https://zingnews.vn/",
-        meta_title: "Zing - Thông tin uy tín, hình ảnh ấn tượng",
-        clicks: 0,
-        ip: "127.0.0.1",
-        created_at: "2022-06-27 15:59:22",
-        updated_at: "2022-06-27 15:59:22"
-      },
-      {
-        id: 18,
-        user_id: 1,
-        url_key: "thanhhai123",
-        is_custom: 1,
-        long_url: "https://facebook.com/thanhhai.dot",
-        meta_title: "Thanh Hải",
-        clicks: 1,
-        ip: "127.0.0.1",
-        created_at: "2022-06-21 20:36:33",
-        updated_at: "2022-06-21 20:36:44"
-      },
-      {
-        id: 14,
-        user_id: 1,
-        url_key: "1415t",
-        is_custom: 1,
-        long_url: "https://www.linkedin.com/",
-        meta_title: "LinkedIn: Log In or Sign Up",
-        clicks: 0,
-        ip: "127.0.0.1",
-        created_at: "2022-06-21 17:17:36",
-        updated_at: "2022-06-21 17:17:36"
-      }
-    ]
-  }
-}
+// const fakeData = {
+//   status: "success",
+//   message: "Successfully Requested",
+//   data: {
+//     total: 13,
+//     perPage: 5,
+//     page: 1,
+//     lastPage: 3,
+//     data: [
+//       {
+//         id: 22,
+//         user_id: 1,
+//         url_key: "7x0Wfx",
+//         is_custom: 0,
+//         long_url: "https://b501-27-72-98-177.ap.ngrok.io/",
+//         meta_title: "Let shorten your links here:",
+//         clicks: 0,
+//         ip: "127.0.0.1",
+//         created_at: "2022-07-13 15:09:18",
+//         updated_at: "2022-07-13 15:09:18"
+//       },
+//       {
+//         id: 21,
+//         user_id: 1,
+//         url_key: "5l9pEu",
+//         is_custom: 0,
+//         long_url: "https://www.messenger.com/t/100007175804217",
+//         meta_title: "Messenger",
+//         clicks: 0,
+//         ip: "127.0.0.1",
+//         created_at: "2022-07-13 14:59:58",
+//         updated_at: "2022-07-13 14:59:58"
+//       },
+//       {
+//         id: 19,
+//         user_id: 1,
+//         url_key: "25hfsgsh",
+//         is_custom: 1,
+//         long_url: "https://zingnews.vn/",
+//         meta_title: "Zing - Thông tin uy tín, hình ảnh ấn tượng",
+//         clicks: 0,
+//         ip: "127.0.0.1",
+//         created_at: "2022-06-27 15:59:22",
+//         updated_at: "2022-06-27 15:59:22"
+//       },
+//       {
+//         id: 18,
+//         user_id: 1,
+//         url_key: "thanhhai123",
+//         is_custom: 1,
+//         long_url: "https://facebook.com/thanhhai.dot",
+//         meta_title: "Thanh Hải",
+//         clicks: 1,
+//         ip: "127.0.0.1",
+//         created_at: "2022-06-21 20:36:33",
+//         updated_at: "2022-06-21 20:36:44"
+//       },
+//       {
+//         id: 14,
+//         user_id: 1,
+//         url_key: "1415t",
+//         is_custom: 1,
+//         long_url: "https://www.linkedin.com/",
+//         meta_title: "LinkedIn: Log In or Sign Up",
+//         clicks: 0,
+//         ip: "127.0.0.1",
+//         created_at: "2022-06-21 17:17:36",
+//         updated_at: "2022-06-21 17:17:36"
+//       }
+//     ]
+//   }
+// }
 
 const Dashboard: React.FC = () => {
-  const [data, setData] = useState<any>(fakeData.data.data);
+  const [data, setData] = useState<any>([]);
   const [total, setTotal] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
   let [isLoading, setIsLoading] = useState<any>();
 
+  const index = async () => {
+
+  }
+
   const viewLink = async () => {
     try {
-      const res = await axios.get('/api/v1/myurls', {params: {page: page}})
+      const res = await axiosInstance.get('/api/v1/myurls', {params: {page: page}})
       return res
     } catch (error) {
       isLoading = false
@@ -97,7 +102,7 @@ const Dashboard: React.FC = () => {
 
   const deleteLink = async (id: number) => {
     try {
-      const res = await axios.delete(`${process.env.REACT_APP_BASE_API}/api/v1/urls/${id}`)
+      const res = await axiosInstance.delete(`/api/v1/urls/${id}`)
 
     } catch (error: any) {
       toast(error.message)
@@ -150,10 +155,11 @@ const Dashboard: React.FC = () => {
   ]
 
   const fetchData = async () => {
-    // const res = await axios.get(`${process.env.REACT_APP_BASE_API}/api/v1/myurls?page=${page}`)
-    setData(fakeData.data.data);
-    setPage(fakeData.data.page);
-    setTotal(fakeData.data.total);
+    const res = await axiosInstance.get(`${process.env.REACT_APP_BASE_API}/api/v1/myurls`, {params: {page}})
+    console.log(res)
+    setData(res.data.data);
+    setPage(res.data.page);
+    setTotal(res.data.total);
   }
 
   useEffect(() => {
